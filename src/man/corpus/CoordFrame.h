@@ -73,6 +73,10 @@ namespace CoordFrame4D{
                                      const float z,
                                      const float w = 1.0f);
 
+    const NBMath::ufrowVector4 rowVector4D(const float x, const float y,
+                                                   const float z,
+                                                   const float w = 1.0f);
+
 
     /**
      * Returns precalculated Trans[x,y,z].Rotz[wz].Roty[wy].Rotx[wx]

@@ -3,8 +3,8 @@ import time
 import sys
 _stderr = sys.stderr
 sys.stderr = sys.stdout
-## import cProfile
-## import pstats
+#import cProfile
+#import pstats
 
 
 # Packages and modules from super-directories
@@ -200,15 +200,16 @@ class Brain(object):
     def profile(self):
         if self.counter == 0:
             cProfile.runctx('self.run()',  self.__dict__, locals(),
-                            'pythonStats')
-            self.p = pstats.Stats('pythonStats')
+                            '/home/nao/pyStats')
+            self.p = pstats.Stats('/home/nao/pyStats')
 
-        elif self.counter < 3000:
-            self.p.add('pythonStats')
+        elif self.counter < 500:
+            self.p.add('/home/nao/pyStats')
             cProfile.runctx('self.run()',  self.__dict__, locals(),
-                            'pythonStats')
+                            '/home/nao/pyStats')
 
-        elif self.counter == 3000:
+        elif self.counter == 500:
+            print 'Done profiling python!'
             self.p.strip_dirs()
             self.p.sort_stats('cumulative')
             ## print 'PYTHON STATS:'
@@ -217,7 +218,7 @@ class Brain(object):
             ## self.p.print_callees()
             ## print 'OUTGOING CALLEES:'
             ## self.p.print_callers()
-            self.p.dump_stats('pythonStats')
+            self.p.dump_stats('/home/nao/pyStats')
 
         self.counter += 1
 

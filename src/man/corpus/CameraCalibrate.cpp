@@ -46,11 +46,14 @@ float CameraCalibrate::Params[CameraCalibrate::NUM_PARAMS] = {0.0f, 0.0f};
 // with ROT_X first, which is the proper order 
 // WARNING: matrix multiplication not commutative
 
-ufmatrix4 CameraCalibrate::Transforms[2] =
-{ CoordFrame4D::rotation4D(CoordFrame4D::Y_AXIS,
-                           CameraCalibrate::Params[CameraCalibrate::PITCH]),
+ufmatrix4 CameraCalibrate::Transforms[2] = {
+//  CoordFrame4D::rotation4D(CoordFrame4D::Z_AXIS,
+//        CameraCalibrate::Params[CameraCalibrate::YAW]),
+  CoordFrame4D::rotation4D(CoordFrame4D::Y_AXIS,
+        CameraCalibrate::Params[CameraCalibrate::PITCH]),
   CoordFrame4D::rotation4D(CoordFrame4D::X_AXIS,
-                           CameraCalibrate::Params[CameraCalibrate::ROLL])};
+        CameraCalibrate::Params[CameraCalibrate::ROLL])
+};
 
 void CameraCalibrate::UpdateWithParams(float _Params[]){
     //update the parameter array

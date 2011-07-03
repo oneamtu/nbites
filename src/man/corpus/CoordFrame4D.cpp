@@ -36,6 +36,32 @@ using namespace CoordFrame4D;
 
 //TODO: Move all these rot4D, etc into a Coord4D namespace.
 // also, make all these use bounded matrices (see NBMatrixMath)
+/*
+ * R_X :
+ * { 1,    0,          0,        0 }
+ * { 0, cos(theta), -sin(theta), 0 }
+ * { 0, sin(theta),  cos(theta), 0 }
+ * { 0,    0,          0,        1 }
+ *
+ * R_Y :
+ * { cos(alpha),    0,   sin(alpha),  0 }
+ * { 0,             1,        0    ,  0 }
+ * { -sin(alpha),   0,   cos(alpha),  0 }
+ * { 0,             0,        0,      1 }
+ *
+ * R_Z :
+ * { cos(beta),    -sin(beta), 0,  0 }
+ * { sin(beta),    cos(beta),  0 , 0 }
+ * {  0,                0,     1,  0 }
+ * {  0,                0,     0,  1 }
+ *
+ * Combined:
+ * R_Z * R_Y * R_X :
+ * { ca cb,  sa st cb - ct sb,  ct sa cb + st sb,  0 }
+ * { ca sb,  ct cb + st sa sb, -st cb  + ct sa sb, 0 }
+ * { -sa  ,      st ca,            ct ca,          0 }
+ * { 0,            0,                 0,           1 }
+ */
 const NBMath::ufmatrix4
 CoordFrame4D::rotation4D(const Axis axis,
                          const float angle) {
@@ -93,6 +119,17 @@ const NBMath::ufvector4 CoordFrame4D::vector4D(const float x, const float y,
     p(1) = y;
     p(2) = z;
     p(3) = w;
+    return p;
+}
+
+const NBMath::ufrowVector4 CoordFrame4D::rowVector4D(const float x, const float y,
+                                               const float z,
+                                               const float w) {
+    NBMath::ufrowVector4 p = boost::numeric::ublas::zero_matrix<float> (4);
+    p(0, 0) = x;
+    p(0, 1) = y;
+    p(0, 2) = z;
+    p(0, 3) = w;
     return p;
 }
 

@@ -4,6 +4,7 @@
 
 #include <Python.h>
 #include <boost/shared_ptr.hpp>
+#include <pyerrors.h>
 
 #include "MotionInterface.h"
 #include "Profiler.h"

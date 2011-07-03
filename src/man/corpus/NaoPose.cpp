@@ -687,7 +687,7 @@ std::vector<VisualLine> NaoPose::getExpectedVisualLinesFromFieldPosition(
 const ublas::vector <float> NaoPose::worldPointToPixel(ublas::vector <float> point)
 {
 
-    ublas::vector <float> pointVectorInWorldFrame =
+    ufvector3 pointVectorInWorldFrame =
             CoordFrame4D::vector4D(point(X) * CM_TO_MM, point(Y) * CM_TO_MM, -comHeight);
     //transform it from the world frame to the camera frame
     pointVectorInWorldFrame(X) = pointVectorInWorldFrame(X) - focalPointInWorldFrame.x;
@@ -708,23 +708,55 @@ const ublas::vector <float> NaoPose::worldPointToPixel(ublas::vector <float> poi
     float x = -(t * pointVectorInWorldFrame(Y)) + IMAGE_CENTER_X;
     float y = -(t * pointVectorInWorldFrame(Z)) + IMAGE_CENTER_Y;
 
-    //if t is negatve, then object is behind, cannnot put that in image
-    if (t < 0) {x = 0;  y = 0;}
-
     return CoordFrame3D::vector3D(x, y);
 }
 
 std::vector<radians> NaoPose::headAnglesToRobotPoint(ublas::vector <float> point) {
 
-    NBMath::ufvector3 dest_pixel = this->worldPointToPixel(point);
-    float x = dest_pixel(X);
-    float y = dest_pixel(Y);
-    x -= IMAGE_CENTER_X;
-    y -= IMAGE_CENTER_Y;
+    ufvector4 pointVectorInWorldFrame =
+            CoordFrame4D::vector4D(point(X) * CM_TO_MM, point(Y) * CM_TO_MM, -comHeight);
+    cout << pointVectorInWorldFrame << endl;
+    //transform it from the world frame to the camera frame
+    pointVectorInWorldFrame(X) = pointVectorInWorldFrame(X) - focalPointInWorldFrame.x;
+    pointVectorInWorldFrame(Y) = pointVectorInWorldFrame(Y) - focalPointInWorldFrame.y;
+    pointVectorInWorldFrame(Z) = pointVectorInWorldFrame(Z) - focalPointInWorldFrame.z;
+
+    cout << "vector x " << pointVectorInWorldFrame(X)
+             << " y " << pointVectorInWorldFrame(Y)
+             << " z " << pointVectorInWorldFrame(Z)<< endl ;
+
+    //now transform the point from camera frame to image frame
+    ufmatrix4 cameraToWorldRotation = cameraToWorldFrame;
+    cameraToWorldRotation(0, 3) = 0;
+    cameraToWorldRotation(1, 3) = 0;
+    cameraToWorldRotation(2, 3) = 0;
+//    cout << "right " << prod(pointVectorInWorldFrame, trans(cameraToWorldRotation)) << endl;
+//    cout << "old " << prod(trans(cameraToWorldRotation), pointVectorInWorldFrame) << endl;
+    pointVectorInWorldFrame = prod(pointVectorInWorldFrame, trans(cameraToWorldRotation));
+
     static std::vector<radians> headAngles(NUM_JOINTS_CHAIN[HEAD_CHAIN]);
-    headAngles[HEAD_YAW] = x*PIX_TO_RAD_X;
-    headAngles[HEAD_PITCH] = y*PIX_TO_RAD_Y;
-    cout << headAngles[HEAD_YAW]*TO_DEG << " " << headAngles[HEAD_PITCH]*TO_DEG << endl;
+    headAngles[HEAD_PITCH] = NBMath::safe_atan2(pointVectorInWorldFrame(X),
+            pointVectorInWorldFrame(Z));
+    headAngles[HEAD_YAW] = NBMath::safe_atan2(pointVectorInWorldFrame(Y),
+            pointVectorInWorldFrame(X));
+
+    cout << "diff " << NBMath::subPIAngle(headAngles[HEAD_YAW])*TO_DEG << " " <<
+            NBMath::subPIAngle(headAngles[HEAD_PITCH])*TO_DEG << endl;
+//    cout << "angles " << getHeadYaw()*TO_DEG << "  " << getHeadPitch()*TO_DEG << endl;
+//    float yaw = NBMath::safe_atan2(cameraToBodyTransform(1, 0), cameraToBodyTransform(0, 0));
+//    float roll = NBMath::safe_atan2(cameraToBodyTransform(2, 1), cameraToBodyTransform(2, 2));
+//    float pitch = -asin(cameraToBodyTransform(2, 0));
+//    cout << "trhdangle " << yaw*TO_DEG << " " << pitch*TO_DEG << " " << roll*TO_DEG << endl;
+//    float yaw = NBMath::safe_atan2(cameraToWorldRotation(1, 0), cameraToWorldRotation(0, 0));
+//    float roll = NBMath::safe_atan2(cameraToWorldRotation(2, 1), cameraToWorldRotation(2, 2));
+//    float pitch = -asin(cameraToWorldRotation(2, 0));
+//    cout << "trbdangle " << yaw*TO_DEG << " " << pitch*TO_DEG << " " << roll*TO_DEG << endl;
+//    cout << "vector x " << pointVectorInWorldFrame(X)
+//         << " y " << pointVectorInWorldFrame(Y)
+//         << " z " << pointVectorInWorldFrame(Z)<< endl ;
+//    cout << "focal pt x " << focalPointInWorldFrame.x
+//             << " y " << focalPointInWorldFrame.y
+//             << " z " << focalPointInWorldFrame.z << endl ;
     return headAngles;
 }
 
@@ -753,7 +785,6 @@ const estimate NaoPose::sizeBasedEstimate(int pixelX, int pixelY, float objectHe
 
     distance2D = sqrt(abs(distance3D * distance3D - (focalPointInWorldFrame.z + comHeight - objectHeight) *
                           (focalPointInWorldFrame.z + comHeight - objectHeight)));
-    //cout<<"shit "<<distance3D<<" "<<(focalPointInWorldFrame.z + comHeight - objectHeight)<<endl;
 
     ufmatrix4 cameraToWorldRotation = cameraToWorldFrame;
     cameraToWorldRotation(0, 3) = 0;

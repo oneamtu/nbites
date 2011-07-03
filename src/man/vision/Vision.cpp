@@ -129,6 +129,7 @@ void Vision::notifyImage() {
     PROF_ENTER(P_TRANSFORM);
     pose->transform();
     PROF_EXIT(P_TRANSFORM);
+    pose->headAnglesToRobotPoint(CoordFrame3D::vector3D(60, 60));
 
     // Perform image correction, thresholding, and object recognition
     thresh->visionLoop();
