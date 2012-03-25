@@ -532,7 +532,7 @@ void Noggin::modifySysPath ()
 #  endif
 
 #ifdef DEBUG_NOGGIN_INITIALIZATION
-//    printf("  Adding %s to sys.path\n", cwd);
+       printf("  Adding %s to sys.path\n", cwd);
 #endif
 
     PyObject *sys_module = PyImport_ImportModule("sys");
