@@ -32,6 +32,9 @@ MAKE_FLAGS=--no-print-directory
 OVERSEER_SERVER_TARGET=overseer_server
 QTOOL_TARGET=qtool
 
+SIM_TARGET=sim
+SIM_EXEC=$(BIN_DIR)/qtool/sim/sim
+
 OVERSEER_SERVER_LIB=$(BIN_DIR)/qtool/overseer/liboverseer_server.so
 OVERSEER_DESTINATION_DIR=$(SRC_DIR)/overseer/austinvilla/ground_truth/lib/
 
@@ -69,6 +72,10 @@ $(EXECUTABLE): build
 
 run: $(EXECUTABLE)
 	$(EXECUTABLE)
+
+sim: $(GEN_MAKEFILE)
+	$(MAKE) $(MAKE_FLAGS) $(SIM_TARGET) -C $(BIN_DIR)
+	$(SIM_EXEC)
 
 debug: 
 	$(MKDIR) -p $(BIN_DIR); \
