@@ -23,10 +23,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
 ########### Sources
 
 set( sim_srcs main.cpp
-                SimView.cpp )
+              SimView.cpp )
 
-set(sim_headers
-    SimView.h )
+set(sim_headers SimView.h
+                PaintWorld.h )
 
 
 ############ Qt4 goodness
@@ -42,5 +42,7 @@ add_executable(sim
 target_link_libraries(
   sim
   viewer
+  image
+  noggin
   ${QT_LIBRARIES}
   )
