@@ -40,6 +40,7 @@ void RobotFinder::checkForAnswerMessage() {
                     string(data + TOOL_ACCEPT_NAME_OFFSET));
             addRemoteRobot(newRemoteRobot);
         }
+        delete data;
     }
     emit refreshedRemoteRobotList();
 }
