@@ -23,10 +23,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
 ########### Sources
 
 set( sim_srcs main.cpp
-              SimView.cpp )
+              SimView.cpp 
+              SimMain.cpp)
 
 set(sim_headers SimView.h
-                PaintWorld.h )
+                PaintWorld.h
+                SimMain.h)
 
 
 ############ Qt4 goodness

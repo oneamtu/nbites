@@ -19,11 +19,11 @@
 namespace qtool {
 namespace sim {
 
-class SimView: public QMainWindow{
+class SimView: public QWidget{
     Q_OBJECT
 
 public:
-    SimView(WorldModel* worldModel);
+    SimView(WorldModel* worldModel, QWidget* parent = 0);
 
 private:
     viewer::BMPImageViewer* fieldView;

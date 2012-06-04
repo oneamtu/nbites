@@ -1,12 +1,10 @@
 #include <QtGui/QApplication>
-#include "WorldModel.h"
-#include "SimView.h"
+#include "SimMain.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qtool::sim::WorldModel worldModel;
-    qtool::sim::SimView simView(&worldModel);
-    simView.show();
+    qtool::sim::SimMain simMain;
+    simMain.show();
     return a.exec();
 }
