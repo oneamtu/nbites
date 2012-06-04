@@ -55,6 +55,7 @@ add_subdirectory( viewer )
 add_subdirectory( offline )
 add_subdirectory( remote )
 add_subdirectory( overseer )
+add_subdirectory( sim )
 
 ######### The executable
 
