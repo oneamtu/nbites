@@ -24,7 +24,7 @@
 namespace common {
 namespace io {
 
-class ProtobufMessage: public common::io::MessageInterface {
+class ProtobufMessage: public MessageInterface {
 
 ADD_SHARED_PTR(ProtobufMessage)
 

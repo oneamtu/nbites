@@ -33,19 +33,21 @@ class Memory; //forward declaration
 #include "Sensors.h"
 #include "Profiler.h"
 #include "ClassHelper.h"
+#include "io/ProtobufMessage.h"
 
 namespace man {
 namespace memory {
 
 class Memory {
 
+    typedef common::io::ProtobufMessage Object;
+
 public:
     ADD_NULL_INSTANCE(Memory)
     ADD_SHARED_PTR(Memory)
-    typedef std::pair<MObject_ID,
-            boost::shared_ptr<MObject> > MObject_IDPair;
-    typedef std::map<MObject_ID,
-            boost::shared_ptr<MObject> > MObject_IDMap;
+
+    typedef std::pair<string, boost::shared_ptr<Object> > MObject_IDPair;
+    typedef std::map<string, boost::shared_ptr<Object> > MObject_IDMap;
 
 public:
     Memory(boost::shared_ptr<Vision> vision_ptr = boost::shared_ptr<Vision>(),
@@ -57,7 +59,7 @@ public:
      * this will usually make the MObject pull data
      * from its corresponding man object
      */
-    void update(boost::shared_ptr<MObject> obj);
+    void update(boost::shared_ptr<Object> obj);
     void updateVision();
 
 public:
@@ -66,13 +68,13 @@ public:
     MMotionSensors::const_ptr getMMotionSensors() const {return mMotionSensors;}
     MImage::const_ptr getMImage() const {return mImage;}
 
-    MObject::const_ptr getMObject(MObject_ID id) const;
-    MObject::ptr getMutableMObject(MObject_ID id);
+    Object::const_ptr getMObject(MObject_ID id) const;
+    Object::ptr getMutableMObject(MObject_ID id);
 
-    void subscribe(Subscriber* subscriber,
-                       MObject_ID objectToSubscribeTo) const;
-    void unsubscribe(Subscriber* subscriber,
-                     MObject_ID objectToUnsuscribeFrom) const;
+    template <class T>
+    boost::shared_ptr<const T> get() const {
+        return boost::static_pointer_cast<const T>(getMObject());
+    }
 
 private:
     MObject_IDMap mobject_IDMap;
