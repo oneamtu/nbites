@@ -8,7 +8,7 @@ TEST(StreamBrokerTest, CanStartAndStopBroker) {
   StreamBroker s;
   ASSERT_NO_THROW(s.start());
 
-  ASSERT_NO_THROW(int result = s.stop());
+  ASSERT_NO_THROW(s.stop());
 }
 
 TEST(StreamBrokerTest, CannotStartTwoBrokersOnSamePort) {
@@ -17,6 +17,7 @@ TEST(StreamBrokerTest, CannotStartTwoBrokersOnSamePort) {
 
   StreamBroker evil_s;
   ASSERT_ANY_THROW(evil_s.start());
+
   ASSERT_NO_THROW(s.stop());
 }
 

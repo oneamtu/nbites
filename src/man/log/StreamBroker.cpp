@@ -143,6 +143,8 @@ void StreamBroker::start() {
 }
 
 int StreamBroker::run() {
+  int run_result = 0;
+
   try {
     while(shouldRun) {
       if (connection_socket_fd == UNINITIALIZED_FD) {
@@ -154,18 +156,18 @@ int StreamBroker::run() {
   } catch (std::exception &e) {
     std::cerr << "Ending stream broker thread after thrown exception:\n"
       << e.what() << std::endl;
-    return -1;
+    run_result = -1;
   }
 
   try {
     closeSockets();
   } catch (std::exception &e) {
-    std::cerr << "Error closing the threads:\n"
+    std::cerr << "Error closing the stream broker sockets:\n"
       << e.what() << std::endl;
-    return -1;
+    run_result = -1;
   }
 
-  return 0;
+  return run_result;
 }
 
 
